@@ -1,22 +1,24 @@
 import torch
 import torchvision
-import torchvision.transforms as transforms
+import torchvision.transforms as T
+from torchvision.datasets import CIFAR100
+train_transform = T.Compose([
+    T.ToTensor(),
+])
 
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+test_transform = T.Compose([
+    T.ToTensor(),
+])
 
-batch_size = 4
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=False, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                          shuffle=True, num_workers=1)
+valset = CIFAR100(root="./data", train=False,
+                  transform=test_transform, download=True)
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=False, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-                                         shuffle=False, num_workers=1)
-
-classes = ('plane', 'car', 'bird', 'cat',
-           'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+batch_size = 256
+num_workers = 16
+val_sampler = None
+val_loader = torch.utils.data.DataLoader(valset, batch_size=batch_size,
+                                         shuffle=(val_sampler is None),
+                                         sampler=val_sampler,
+                                         num_workers=num_workers,
+                                         persistent_workers=True)
