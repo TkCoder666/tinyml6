@@ -1,0 +1,9 @@
+{
+    "format": "RGB",
+    "width": 32,
+    "height": 32,
+    "path": "/home/tk/code/tinyml6/data/cifar-100-image/test/",
+    "used_image_num": 1000,
+    "feature_quantize_method": "KL",
+    "weight_quantize_method": "MAX_ABS"
+}
