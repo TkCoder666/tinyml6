@@ -17,7 +17,7 @@ trainset = CIFAR100(root="./data", train=True,
                     transform=train_transform, download=True)
 
 
-batch_size = 256
+batch_size = 1
 num_workers = 16
 val_sampler = None
 val_loader = torch.utils.data.DataLoader(valset, batch_size=batch_size,

@@ -12,7 +12,7 @@ def train(model, train_loader, optimizer, device):
         logits = model(imgs.to(device))
 
 
-def test(moedel, testloader, device):
+def test(model, testloader, device):
     for batch in tqdm(testloader):
         imgs, labels = batch
         model = model.to(device)
