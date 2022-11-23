@@ -2,7 +2,7 @@ import typing
 import torch
 import os
 import time
-
+from tqdm import tqdm
 
 import torch.distributed as dist
 
@@ -116,15 +116,15 @@ def print_size_of_model(model):
     os.remove('temp.p')
 
 
-import time
-def inference_benchmark(net, testloader,device):
+def inference_benchmark(net, testloader, device):
     correct = 0
     total = 0
     t1 = time.time()
     net = net.to(device)
+    # net.eval()
     accuracy_metric = AccuracyMetric(topk=(1, 5))
     with torch.no_grad():
-        for data in testloader:
+        for data in tqdm(testloader):
             images, labels = data
             images = images.to(device)
             labels = labels.to(device)
