@@ -15,10 +15,10 @@ old_package = tvmc.compile(model, target="llvm", package_path="saved_model/tvm_m
 result = tvmc.run(old_package, device="cpu")
 print(result)
 
-# # Step 4: Tuning (AutoScheduler, slow)
+# # Step 4: Tuning (AutoScheduler, slow, marked as before and after)
 # tvmc.tune(model, target="llvm", enable_autoscheduler=True)
 
-# Step 4: Tuning (AutoTVM, fast)
+# Step 4: Tuning (AutoTVM, fast, marked as old and new)
 tvmc.tune(model, target="llvm")
 
 # Step 2: Compile (After)
