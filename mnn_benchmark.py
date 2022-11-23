@@ -6,7 +6,8 @@ import numpy as np
 import MNN
 import cv2
 import time
-from data_provider import val_loader
+from data_provider import get_test_loader
+from tqdm import tqdm
 
 
 def inference(model_path, image):
@@ -14,7 +15,7 @@ def inference(model_path, image):
     batch_size = 1
     interpreter = MNN.Interpreter(
         model_path)
-    session = interpreter.createSession({"backend": "CUDA"})
+    session = interpreter.createSession()
     input_tensor = interpreter.getSessionInput(session)
     # image = np.random.random((batch_size, 3, 32, 32))
     image = image.astype(np.float32)
@@ -37,14 +38,13 @@ def mnn_inference_benchmark(model_path, val_loader):
     total = 0
     right = 0
     begin = time.time()
-    for image, data in val_loader:
+    for image, data in tqdm(val_loader):
         # print(type(image),image.shape)
         # print(type(data),data.shape)
         result = inference(model_path, image.numpy())
         # result=0
         total += 1
         if result == data[0]:
-            print("right")
             right += 1
     end = time.time()
     print("right", right)
@@ -55,4 +55,5 @@ def mnn_inference_benchmark(model_path, val_loader):
 if __name__ == "__main__":
 
     model_path = "saved_model/mnn_model/resnet56.mnn"
-    mnn_inference_benchmark(model_path, val_loader)
+    test_loader = get_test_loader(1, 16)
+    mnn_inference_benchmark(model_path, test_loader)
