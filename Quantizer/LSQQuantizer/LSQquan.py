@@ -85,7 +85,8 @@ def test(model, testloader, device, criterion):
 if __name__ == '__main__':
     Quantizer = LSQQuantizer
     model = torch.load("saved_model/original_model/resnet56_model.pth")
-    quantizer = Quantizer(model, retain_sparsity=False)
+    bits = 8
+    quantizer = Quantizer(model, retain_sparsity=False, bits=bits)
     quant_model = quantizer.convert()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     quant_model.to(device)
@@ -115,13 +116,13 @@ if __name__ == '__main__':
         # 保存模型，注意index，即模型和保存MNN模型压缩参数文件是一一对应的
         quant_model.eval()
         torch.save(quant_model,
-                   f"LSQquantize_data/quant_model_{epoch}.pth")
-        x = torch.randn(1, 3, 28, 28).to(device)
+                   f"saved_model/quantized_model/LSQquantize_data_{bits}bit/quant_model_{epoch}.pth")
+        x = torch.randn(1, 3, 32, 32).to(device)  # !fuck
         torch.onnx.export(
-            quant_model, x, f"LSQquantize_data/quant_model_{epoch}.onnx")
+            quant_model, x, f"saved_model/quantized_model/LSQquantize_data_{bits}bit/quant_model_{epoch}.onnx")
 
         # 保存MNN模型压缩参数文件，必须要保存这个文件！
         # 如果进行量化的模型有剪枝，请将剪枝时生成的MNN模型压缩参数文件 "compress_params.bin" 文件名 在下方传入，并将 append 设置为True
         # append表示追加，如果此模型仅进行量化，append设为False即可！
         quantizer.save_compress_params(
-            f"LSQquantize_data/quant_model_{epoch}.onnx", f"LSQquantize_data/compress_params_{epoch}.bin", append=False)
+            f"saved_model/quantized_model/LSQquantize_data_{bits}bit/quant_model_{epoch}.onnx", f"saved_model/quantized_model/LSQquantize_data_{bits}bit/compress_params_{epoch}.bin", append=False)
