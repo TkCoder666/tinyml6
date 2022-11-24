@@ -29,20 +29,24 @@ def benchmark(model_path, loops):
         interpreter.runSession(session)
         t2 = time.time()
         dt_list.append(t2-t1)
-    print(f"{model_path}'s time benchmark")
-    print("max,avg,min")
-    print(f"{max(dt_list)*1000:.3f},{sum(dt_list)/len(dt_list)*1000:.3f},{min(dt_list)*1000:.3f}")
+    model_name = model_path.split("/")[-2] + '/' + model_path.split("/")[-1]
+    print(f"{model_name},{max(dt_list)*1000:.3f},{sum(dt_list)/len(dt_list)*1000:.3f},{min(dt_list)*1000:.3f}")
 
 
 def get_all_mnn_model_path():
     dir_list = ["/home/tk/code/tinyml6/saved_model/pruned_model/simdoc", "/home/tk/code/tinyml6/saved_model/pruned_model/sniplevel", "/home/tk/code/tinyml6/saved_model/pruned_model/taylorfochannel",
-                "/home/tk/code/tinyml6/saved_model/quantized_model/quan_4bit", "/home/tk/code/tinyml6/saved_model/quantized_model/quan_8bit"]
+                "/home/tk/code/tinyml6/saved_model/quantized_model/quan_4bit", "/home/tk/code/tinyml6/saved_model/quantized_model/quan_8bit", "/home/tk/code/tinyml6/saved_model/mnn_model"]
     mnn_path_list = []
     for dir in dir_list:
-        pass
+        mnn_path_list.extend(glob(f"{dir}/*.mnn"))
+    return mnn_path_list
 
 
 if __name__ == "__main__":
 
     model_path = "/home/tk/code/tinyml6/saved_model/mnn_model/resnet56.mnn"
-    benchmark(model_path, 1000)
+    mnn_path_list = get_all_mnn_model_path()
+    mnn_path_list.sort()
+    print("model_name,max,avg,min")
+    for mnn_path in mnn_path_list:
+        benchmark(mnn_path, 1000)
