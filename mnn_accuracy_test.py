@@ -54,7 +54,7 @@ def mnn_inference_benchmark(model_path, val_loader):
 
 if __name__ == "__main__":
 
-    model_path = "/home/tk/code/tinyml6/saved_model/quantized_model/quan_4bit/quant_model_1.mnn"
+    model_path = "/home/tk/code/tinyml6/saved_model/quantized_model/quan_4bit/quant_model_10.mnn"
     print(f"model_path is {model_path}")
-    test_loader = get_test_loader(1, 16)
+    test_loader = get_test_loader(1, 1)
     mnn_inference_benchmark(model_path, test_loader)
