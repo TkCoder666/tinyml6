@@ -9,7 +9,7 @@ from data_provider import *
 from tvm.driver import tvmc
 
 # local demo or the remote raspberry pi.
-local_demo = False
+local_demo = True
 
 # # Setup the RPC tracker.
 # # On the host:
@@ -26,7 +26,7 @@ hostname = "127.0.0.1"
 # port of the RPC tracker
 port = 9090
 # repeat times
-repeat_time = 10
+repeat_time = 10000
 
 
 if local_demo:
@@ -63,11 +63,11 @@ testdata = {'input': testdata}
 ## Tune the model.
 
 
-def get_package(model_path, tuning):
+def get_package(model_path, id, tuning):
     global local_demo
     global target, rpc_key, hostname, port
     # saving path
-    path = "saved_model/tvm_model/resnet56_{}.tar".format(("" if local_demo else "rasp_") + tuning)
+    path = "saved_model/tvm_model/resnet56_{}_{}.tar".format(id, ("" if local_demo else "rasp_") + tuning)
 
     # The package is cached.
     if os.path.isfile(path):
@@ -77,6 +77,13 @@ def get_package(model_path, tuning):
     model = tvmc.load(model_path)
 
     if local_demo:
+        if tuning == "old":  # compile only
+            pass
+        elif tuning == "autotvm":  # fast but worse
+            tvmc.tune(model, target=target)
+        elif tuning == "autoscheduler":  # slow but better
+            tvmc.tune(model, target=target, enable_autoscheduler=True)
+    else:
         # Tuning
         if tuning == "old":  # compile only
             pass
@@ -84,13 +91,6 @@ def get_package(model_path, tuning):
             tvmc.tune(model, target=target, rpc_key=rpc_key, hostname=hostname, port=port)
         elif tuning == "autoscheduler":  # slow but better
             tvmc.tune(model, target=target, enable_autoscheduler=True, rpc_key=rpc_key, hostname=hostname, port=port)
-    else:
-        if tuning == "old":  # compile only
-            pass
-        elif tuning == "autotvm":  # fast but worse
-            tvmc.tune(model, target=target, )
-        elif tuning == "autoscheduler":  # slow but better
-            tvmc.tune(model, target=target, enable_autoscheduler=True)
 
     # Compile
     return tvmc.compile(model, target=target, package_path=path)
@@ -105,23 +105,23 @@ def test_package(package):
     else:
         return tvmc.run(package, device="cpu", inputs=testdata, repeat=repeat_time, benchmark=True, number=1, rpc_key=rpc_key, hostname=hostname, port=port)
 
-# The model path
-onnx_model_path = 'saved_model/onnx_model/resnet56.onnx'
-
-# Compile the old model
-old_package = get_package(onnx_model_path, "old")
-
-# Tuning using AutoTVM
-autotvm_package = get_package(onnx_model_path, "autotvm")
-
-# Tuning using AutoScheduler
-autoscheduler_package = get_package(onnx_model_path, "autoscheduler")
-
-
 def print_output(result: tvmc.TVMCResult):
     output_idx = 'output_0'
     print(result)
     print('TVM prediction top-1: {}'.format(np.argmax(result.get_output(output_idx))))
+
+
+# The model path
+onnx_model_path = 'saved_model/onnx_model/resnet56.onnx'
+
+# Compile the old model
+old_package = get_package(onnx_model_path, "orig", "old")
+
+# Tuning using AutoTVM
+autotvm_package = get_package(onnx_model_path, "orig", "autotvm")
+
+# Tuning using AutoScheduler
+autoscheduler_package = get_package(onnx_model_path, "orig", "autoscheduler")
 
 # Testing:
 print("*** Original ***")
@@ -168,3 +168,32 @@ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
 Output Names:
 ['output_0']
 '''
+
+print("Training ...")
+for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
+    sparsity_list = [0.3, 0.5, 0.8] if method != "taylorfochannel_30" else [0.3, 0.5]
+    for sparsity in sparsity_list:
+        id = "{}_{}".format(method, sparsity)
+        onnx_model_path = "saved_model/onnx_model/{}.onnx".format(id)
+        old_package = get_package(onnx_model_path, id, "old")
+        autotvm_package = get_package(onnx_model_path, id, "autotvm")
+gc.collect()
+
+print("Testing ...")
+for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
+    sparsity_list = [0.3, 0.5, 0.8] if method != "taylorfochannel_30" else [0.3, 0.5]
+    for sparsity in sparsity_list:
+        id = "{}_{}".format(method, sparsity)
+        onnx_model_path = "saved_model/onnx_model/{}.onnx".format(id)
+        old_package = get_package(onnx_model_path, id, "old")
+        autotvm_package = get_package(onnx_model_path, id, "autotvm")
+
+        print("*** Original {}***".format(id))
+        old_result = test_package(old_package)
+        print_output(old_result)
+        gc.collect()
+
+        print("*** AutoTVM {}***".format(id))
+        autotvm_result = test_package(autotvm_package)
+        print_output(autotvm_result)
+        gc.collect()
