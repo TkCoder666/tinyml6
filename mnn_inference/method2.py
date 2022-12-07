@@ -2,14 +2,14 @@ import MNN.expr as F
 import cv2
 import torch
 import numpy as np
-mnn_model_path = './yolo.mnn'
-image_path = './input.jpeg'
+mnn_model_path = '../saved_model/mnn_model/resnet.mnn'
+image_path = './ILSVRC2012_val_00049999.JPEG'
 
 # 图像预处理
-def process(image, size):
-    # image_data = cv2.imread(image_path)
-    # image_data = cv2.cvtColor(image_data,cv2.COLOR_BGR2RGB)
-    image_resize = cv2.resize(image, size).astype(float)
+def process(image_path, size):
+    image_data = cv2.imread(image_path)
+    image_data = cv2.cvtColor(image_data,cv2.COLOR_BGR2RGB)
+    image_resize = cv2.resize(image_data, size).astype(float)
     image_resize /= 255
     input_data = np.array(image_resize)
     input_data = input_data.transpose((2, 0, 1))  # HWC --> CHW
@@ -37,7 +37,7 @@ def m_yolo_inference(image, m_path):
     return torch.from_numpy(outputVar0.read()), torch.from_numpy(outputVar1.read())
 
 def main():
-    image = process(image_path, (320, 320))
+    image = process(image_path, (32, 32))
     out1, out2 = m_yolo_inference(image, mnn_model_path)
     print(type(out1))
 

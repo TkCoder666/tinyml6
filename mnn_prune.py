@@ -24,14 +24,14 @@ model.to(device)
 
 # 将模型进行转换，并使用转换后的模型进行训练，测试
 # 更多配置请看API部分
-learning_rate=0.001
-# pruner = SNIPLevelPruner(model, total_pruning_iterations=1, sparsity=0.9, debug_info=False, 
-# prune_finetune_iterations=9,max_prune_ratio=0.99)
+learning_rate=1e-4
+pruner = SNIPLevelPruner(model, total_pruning_iterations=1, sparsity=0.8, debug_info=False, 
+prune_finetune_iterations=99,max_prune_ratio=0.99)
 # pruner = SIMDOCPruner(model, total_pruning_iterations=1, sparsity=0.9, debug_info=False, 
 # prune_finetune_iterations=9,max_prune_ratio=0.99)
-pruner = TaylorFOChannelPruner(model, total_pruning_iterations=1, sparsity=0.7, debug_info=False, 
-prune_finetune_iterations=9,max_prune_ratio=0.99,
- align_channels=4 )
+# pruner = TaylorFOChannelPruner(model, total_pruning_iterations=1, sparsity=0.7, debug_info=False, 
+# prune_finetune_iterations=9,max_prune_ratio=0.99,
+#  align_channels=4 )
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = learning_rate)
 
@@ -60,6 +60,7 @@ def test(model, data):
             # optimizer.zero_grad()
             output = model(d)
             accuracy_metric.update(output, t)
+    print("----"*20)
     print(
         # f'Accuracy of the network on the 10000 test images: {100 * correct // total} %',
         f"top1_acc {accuracy_metric.at(1).rate} ",
@@ -69,7 +70,7 @@ def test(model, data):
     # 获取当前剪枝比例
     # print(pruner.current_prune_ratios())
 
-epochs = 1 # 发现训练下降
+epochs = 10 # 发现训练下降
 val_loader=get_test_loader(256,16)
 for epoch in range(1, epochs + 1):
     train(model, val_loader, optimizer, pruner)
