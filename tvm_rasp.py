@@ -23,14 +23,18 @@ func = relay.Function(func.params, relay.nn.softmax(func.body), None, func.type_
 
 
 # control the local testing or not
-local_demo = True
+local_demo = False
 
 if local_demo:
     target = tvm.target.Target("llvm")
 else:
-    target = tvm.target.arm_cpu("rasp3b")
+    # target = tvm.target.arm_cpu("rasp3b")
     # The above line is a simple form of
     # target = tvm.target.Target('llvm -device=arm_cpu -model=bcm2837 -mtriple=armv7l-linux-gnueabihf -mattr=+neon')
+    # target = tvm.target.Target('llvm -device=arm_cpu -model=bcm2837 -mtriple=aarch64-linux-gnu -mattr=+neon')
+    target = tvm.target.Target('llvm -device=arm_cpu -model=bcm2837 -mtriple=aarch64-linux-gnu -mattr=+neon -mcpu=cortex-a53')
+    # https://discuss.tvm.apache.org/t/tutorial-errors/7962/9
+    # It is still failed to work on my MacBook to QEMU Raspberry Pi.
 
 with tvm.transform.PassContext(opt_level=3):
     lib = relay.build(func, target, params=params)
@@ -53,8 +57,8 @@ if local_demo:
     remote = rpc.LocalSession()
 else:
     # The following is my environment, change this to the IP address of your target device
-    host = "10.77.1.162"
-    port = 9090
+    host = "127.0.0.1"
+    port = 8080
     remote = rpc.connect(host, port)
 
 # upload the library to remote device and load it
