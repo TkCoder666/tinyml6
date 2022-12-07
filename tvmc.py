@@ -8,6 +8,39 @@ import numpy as np
 from data_provider import *
 from tvm.driver import tvmc
 
+# local demo or the remote raspberry pi.
+local_demo = False
+
+# # Setup the RPC tracker.
+# # On the host:
+# python -m tvm.exec.rpc_tracker --host=0.0.0.0 --port=9190
+# # On the client, After compile the runtime:
+# python -m tvm.exec.rpc_server --tracker=10.0.2.2:9190 --key=rasp3b --port=9090
+# # On the host to get the current status:
+# python -m tvm.exec.query_rpc_tracker --host=0.0.0.0 --port=9190
+
+# RPC key
+rpc_key = "rasp3b"
+# hostname of the RPC tracker
+hostname = "127.0.0.1"
+# port of the RPC tracker
+port = 9090
+# repeat times
+repeat_time = 10
+
+
+if local_demo:
+    target = "llvm"
+else:
+    # This could potentially get broken on Mac for cross-compilation.
+    target = "llvm -device=arm_cpu -model=bcm2837 -mtriple=aarch64-linux-gnu -mattr=+neon"
+
+    ## Setup the rpc tracker on the host machine
+    # python -m tvm.exec.rpc_tracker --host=0.0.0.0 --port=8180
+    ## Then start the rpc server on the client
+    # sudo ifup -a
+    # sudo ip route # <- will get [HOST IP].
+    # python -m tvm.exec.rpc_server --tracker=[HOST IP]:9190 --key=rasp3b --port=9090
 
 ## Prepare the data.
 
@@ -29,9 +62,12 @@ testdata = {'input': testdata}
 
 ## Tune the model.
 
+
 def get_package(model_path, tuning):
+    global local_demo
+    global target, rpc_key, hostname, port
     # saving path
-    path = "saved_model/tvm_model/resnet56_{}.tar".format(tuning)
+    path = "saved_model/tvm_model/resnet56_{}.tar".format(("" if local_demo else "rasp_") + tuning)
 
     # The package is cached.
     if os.path.isfile(path):
@@ -40,22 +76,34 @@ def get_package(model_path, tuning):
     # model will be loaded cleanly everytime.
     model = tvmc.load(model_path)
 
-    # Tuning
-    if tuning == "old":  # compile only
-        pass
-    elif tuning == "autotvm":  # fast but worse
-        tvmc.tune(model, target="llvm")
-    elif tuning == "autoscheduler":  # slow but better
-        tvmc.tune(model, target="llvm", enable_autoscheduler=True)
+    if local_demo:
+        # Tuning
+        if tuning == "old":  # compile only
+            pass
+        elif tuning == "autotvm":  # fast but worse
+            tvmc.tune(model, target=target, rpc_key=rpc_key, hostname=hostname, port=port)
+        elif tuning == "autoscheduler":  # slow but better
+            tvmc.tune(model, target=target, enable_autoscheduler=True, rpc_key=rpc_key, hostname=hostname, port=port)
+    else:
+        if tuning == "old":  # compile only
+            pass
+        elif tuning == "autotvm":  # fast but worse
+            tvmc.tune(model, target=target, )
+        elif tuning == "autoscheduler":  # slow but better
+            tvmc.tune(model, target=target, enable_autoscheduler=True)
 
     # Compile
-    return tvmc.compile(model, target="llvm", package_path=path)
+    return tvmc.compile(model, target=target, package_path=path)
 
 
 def test_package(package):
+    global local_demo, repeat_time
+    global rpc_key, hostname, port
     # only simulates 10000 pictures from the same picture.
-    return tvmc.run(package, device="cpu", inputs=testdata, repeat=10000, benchmark=True, number=1)
-
+    if local_demo:
+        return tvmc.run(package, device="cpu", inputs=testdata, repeat=repeat_time, benchmark=True, number=1)
+    else:
+        return tvmc.run(package, device="cpu", inputs=testdata, repeat=repeat_time, benchmark=True, number=1, rpc_key=rpc_key, hostname=hostname, port=port)
 
 # The model path
 onnx_model_path = 'saved_model/onnx_model/resnet56.onnx'
