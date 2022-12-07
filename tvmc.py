@@ -69,12 +69,26 @@ autotvm_package = get_package(onnx_model_path, "autotvm")
 # Tuning using AutoScheduler
 autoscheduler_package = get_package(onnx_model_path, "autoscheduler")
 
+
+def print_output(result: tvmc.TVMCResult):
+    output_idx = 'output_0'
+    print(result)
+    print('TVM prediction top-1: {}'.format(np.argmax(result.get_output(output_idx))))
+
 # Testing:
-print("*** Original ***\n", test_package(old_package))
+print("*** Original ***")
+old_result = test_package(old_package)
+print_output(old_result)
 gc.collect()
-print("*** AutoTVM ***\n", test_package(autotvm_package))
+
+print("*** AutoTVM ***")
+autotvm_result = test_package(autotvm_package)
+print_output(autotvm_result)
 gc.collect()
-print("*** AutoScheduler ***\n", test_package(autoscheduler_package))
+
+print("*** AutoScheduler ***")
+autoscheduler_result = test_package(autoscheduler_package)
+print_output(autoscheduler_result)
 
 '''
 Test Result on MacBook Pro M1 (arm64)
