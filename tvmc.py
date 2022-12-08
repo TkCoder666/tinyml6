@@ -20,7 +20,7 @@ local_demo = True
 # python -m tvm.exec.query_rpc_tracker --host=0.0.0.0 --port=9190
 
 # RPC key
-rpc_key = "rasp3b"
+rpc_key = "rasp4b"
 # hostname of the RPC tracker
 hostname = "127.0.0.1"
 # port of the RPC tracker
@@ -139,35 +139,38 @@ autoscheduler_result = test_package(autoscheduler_package)
 print_output(autoscheduler_result)
 
 '''
-Test Result on MacBook Pro M1 (arm64)
-
-Files already downloaded and verified
-Files already downloaded and verified
-2022-11-23 22:13:56.104 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp6wjcewqp/mod.so
 *** Original ***
+2022-12-08 21:37:32.001 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpsgx2hpdc/mod.so
 Execution time summary:
-mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
-11.6242      10.3862      284.3319      4.8533      10.0938
-
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+  10.4150       9.8591      261.3819      6.4832       8.1280   
+               
 Output Names:
-['output_0']
-2022-11-23 22:15:53.243 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp5d4_souc/mod.so
+ ['output_0']
+TVM prediction top-1: 90
 *** AutoTVM ***
+2022-12-08 21:39:16.760 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpuy86k1hf/mod.so
 Execution time summary:
-mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
-10.7392       9.6786      297.6342      4.9580       9.9129
-
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.9201       9.4705      278.3681      5.2655       8.4989   
+               
 Output Names:
-['output_0']
-2022-11-23 22:17:41.477 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp_nwhcn0j/mod.so
+ ['output_0']
+TVM prediction top-1: 90
 *** AutoScheduler ***
+2022-12-08 21:40:56.575 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpvielc7ho/mod.so
 Execution time summary:
-mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
-10.4682       9.4239      275.7486      4.8571       9.5825
-
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.0624       8.6035      261.9947      4.7345       7.0949   
+               
 Output Names:
-['output_0']
+ ['output_0']
+TVM prediction top-1: 90
 '''
+
+testdata = np.array(valset[0][0])
+testdata = np.expand_dims(testdata, axis=0)
+testdata = {'input.1': testdata}
 
 print("Training ...")
 for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
@@ -197,3 +200,190 @@ for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
         autotvm_result = test_package(autotvm_package)
         print_output(autotvm_result)
         gc.collect()
+
+'''
+*** Original simdoc_10_0.3***
+2022-12-08 21:47:28.776 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpoivwrygo/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+  10.4669       9.9134      271.6495      6.0622       9.0804   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** AutoTVM simdoc_10_0.3***
+2022-12-08 21:49:14.148 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpxz_2xlh5/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+  10.4166       9.9016      274.8900      5.3818       8.8519   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** Original simdoc_10_0.5***
+2022-12-08 21:50:58.989 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpzebqb1jx/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.3541       8.9240      257.6106      4.8803       7.1912   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 71
+*** AutoTVM simdoc_10_0.5***
+2022-12-08 21:52:33.302 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpstmt1wr0/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.8503       8.4532      228.4196      4.7926       6.2059   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 71
+*** Original simdoc_10_0.8***
+2022-12-08 21:54:02.451 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpabodu7u_/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.9214       8.4759      220.5746      4.9315       6.2365   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** AutoTVM simdoc_10_0.8***
+2022-12-08 21:55:32.323 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmps32qzih8/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.8702       8.4550      224.7396      4.8756       6.7185   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** Original sniplevel_30_0.3***
+2022-12-08 21:15:36.324 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpz_n6co1u/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.8718       8.5305      253.5140      4.8221       6.8228   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** AutoTVM sniplevel_30_0.3***
+2022-12-08 21:17:05.722 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp394k7psj/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.8881       8.4759      216.0146      4.8541       6.6423   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** Original sniplevel_30_0.5***
+2022-12-08 21:18:35.212 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpexveex98/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.1957       8.6764      220.8111      4.8663       7.3526   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** AutoTVM sniplevel_30_0.5***
+2022-12-08 21:20:07.891 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpfelpaopp/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.0330       8.5996      259.6242      4.9404       6.7892   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** Original sniplevel_30_0.8***
+2022-12-08 21:21:39.066 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmppmc_kxrc/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.9046       8.5537      240.8822      4.9759       6.6121   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 46
+*** AutoTVM sniplevel_30_0.8***
+2022-12-08 21:23:08.753 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp8zq3vprg/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.2058       8.7619      257.5680      4.8931       6.9967   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 46
+*** Original taylorfochannel_30_0.3***
+2022-12-08 21:24:41.608 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpk4l5z_r9/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.9925       8.5569      242.3417      5.0245       6.8679   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** AutoTVM taylorfochannel_30_0.3***
+2022-12-08 21:26:12.237 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp92j424jd/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   8.9280       8.5512      229.3331      4.8591       6.5644   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 68
+*** Original taylorfochannel_30_0.5***
+2022-12-08 21:27:42.143 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpemb9d28v/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.1836       8.7751      262.5479      4.4571       7.0899   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 12
+*** AutoTVM taylorfochannel_30_0.5***
+2022-12-08 21:29:14.719 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpjrx4izfq/mod.so
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   9.0752       8.6868      235.2542      4.9802       7.0347   
+               
+Output Names:
+ ['output_0']
+TVM prediction top-1: 12
+'''
+
+testdata = np.array(valset[0][0])
+testdata = np.expand_dims(testdata, axis=0)
+testdata = {'onnx::Conv_0': testdata}
+
+id = "quant_model_1"
+onnx_model_path = "saved_model/onnx_model/{}.onnx".format(id)
+old_package = get_package(onnx_model_path, id, "old")
+autotvm_package = get_package(onnx_model_path, id, "autotvm")
+
+print("*** Original {}***".format(id))
+old_result = test_package(old_package)
+print_output(old_result)
+gc.collect()
+
+print("*** AutoTVM {}***".format(id))
+autotvm_result = test_package(autotvm_package)
+print_output(autotvm_result)
+gc.collect()
+
+'''
+*** Original quant_model_1***
+2022-12-08 21:42:27.825 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpcts_gms2/mod.so
+Execution time summary:
+mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
+9.8075       9.3558      263.3517      5.0134       7.8135
+
+Output Names:
+['output_0']
+TVM prediction top-1: 68
+*** AutoTVM quant_model_1***
+2022-12-08 21:44:06.473 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp8jtokmso/mod.so
+Execution time summary:
+mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)
+9.6083       9.1280      272.7568      4.9825       7.8099
+
+Output Names:
+['output_0']
+TVM prediction top-1: 68
+'''
