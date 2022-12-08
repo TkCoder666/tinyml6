@@ -10,6 +10,7 @@ from data_provider import *
 # prepare the data
 testdata = valset[0]
 x = np.array(testdata[0])
+np.savez("deploy/test", input=x)
 
 # load the model
 onnx_model = onnx.load('saved_model/onnx_model/resnet56.onnx')
@@ -60,6 +61,10 @@ else:
     host = "127.0.0.1"
     port = 8080
     remote = rpc.connect(host, port)
+
+remote.upload(lib_fpath, "/home/pi/resnet56_rpc.tar")
+remote.upload('deploy/tvm_on_rasp.py','/home/pi/tvm_on_rasp.py')
+remote.upload('deploy/test.npz','/home/pi/test.npz')
 
 # upload the library to remote device and load it
 remote.upload(lib_fpath)
