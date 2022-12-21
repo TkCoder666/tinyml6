@@ -117,11 +117,13 @@ onnx_model_path = 'saved_model/onnx_model/resnet56.onnx'
 # Compile the old model
 old_package = get_package(onnx_model_path, "orig", "old")
 
+'''
 # Tuning using AutoTVM
 autotvm_package = get_package(onnx_model_path, "orig", "autotvm")
 
 # Tuning using AutoScheduler
 autoscheduler_package = get_package(onnx_model_path, "orig", "autoscheduler")
+'''
 
 # Testing:
 print("*** Original ***")
@@ -129,6 +131,7 @@ old_result = test_package(old_package)
 print_output(old_result)
 gc.collect()
 
+'''
 print("*** AutoTVM ***")
 autotvm_result = test_package(autotvm_package)
 print_output(autotvm_result)
@@ -137,6 +140,7 @@ gc.collect()
 print("*** AutoScheduler ***")
 autoscheduler_result = test_package(autoscheduler_package)
 print_output(autoscheduler_result)
+'''
 
 '''
 *** Original ***
@@ -166,6 +170,8 @@ Execution time summary:
 Output Names:
  ['output_0']
 TVM prediction top-1: 90
+'''
+
 '''
 
 testdata = np.array(valset[0][0])
@@ -200,6 +206,8 @@ for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
         autotvm_result = test_package(autotvm_package)
         print_output(autotvm_result)
         gc.collect()
+
+'''
 
 '''
 *** Original simdoc_10_0.3***
@@ -348,6 +356,8 @@ Output Names:
 TVM prediction top-1: 12
 '''
 
+'''
+
 testdata = np.array(valset[0][0])
 testdata = np.expand_dims(testdata, axis=0)
 testdata = {'onnx::Conv_0': testdata}
@@ -366,6 +376,8 @@ print("*** AutoTVM {}***".format(id))
 autotvm_result = test_package(autotvm_package)
 print_output(autotvm_result)
 gc.collect()
+
+'''
 
 '''
 *** Original quant_model_1***
