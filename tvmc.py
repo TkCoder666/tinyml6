@@ -15,7 +15,7 @@ local_demo = False
 # # On the host:
 # python -m tvm.exec.rpc_tracker --host=0.0.0.0 --port=9190
 # # On the client, After compile the runtime:
-# python -m tvm.exec.rpc_server --tracker=10.0.2.2:9190 --key=rasp3b --port=9090
+# python -m tvm.exec.rpc_server --tracker=[IP]:9190 --key=rasp4b --port=9090
 # # On the host to get the current status:
 # python -m tvm.exec.query_rpc_tracker --host=0.0.0.0 --port=9190
 
