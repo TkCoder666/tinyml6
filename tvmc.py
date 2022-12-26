@@ -9,7 +9,7 @@ from data_provider import *
 from tvm.driver import tvmc
 
 # local demo or the remote raspberry pi.
-local_demo = False
+local_demo = True
 
 # # Setup the RPC tracker.
 # # On the host:
@@ -93,7 +93,7 @@ def get_package(model_path, id, tuning):
             tvmc.tune(model, target=target, enable_autoscheduler=True, rpc_key=rpc_key, hostname=hostname, port=port)
 
     # Compile
-    return tvmc.compile(model, target=target, package_path=path)
+    return tvmc.compile(model, target=target, package_path=path, output_format="tar")
 
 
 def test_package(package):
