@@ -9,7 +9,7 @@ from data_provider import *
 from tvm.driver import tvmc
 
 # local demo or the remote raspberry pi.
-local_demo = True
+local_demo = False
 
 # # Setup the RPC tracker.
 # # On the host:
@@ -121,7 +121,7 @@ old_package = get_package(onnx_model_path, "orig", "old")
 autotvm_package = get_package(onnx_model_path, "orig", "autotvm")
 
 # Tuning using AutoScheduler
-autoscheduler_package = get_package(onnx_model_path, "orig", "autoscheduler")
+# autoscheduler_package = get_package(onnx_model_path, "orig", "autoscheduler")
 
 # Testing:
 print("*** Original ***")
@@ -134,9 +134,9 @@ autotvm_result = test_package(autotvm_package)
 print_output(autotvm_result)
 gc.collect()
 
-print("*** AutoScheduler ***")
-autoscheduler_result = test_package(autoscheduler_package)
-print_output(autoscheduler_result)
+# print("*** AutoScheduler ***")
+# autoscheduler_result = test_package(autoscheduler_package)
+# print_output(autoscheduler_result)
 
 '''
 *** Original ***
@@ -174,7 +174,7 @@ testdata = {'input.1': testdata}
 
 print("Training ...")
 for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
-    sparsity_list = [0.3, 0.5, 0.8] if method != "taylorfochannel_30" else [0.3, 0.5]
+    sparsity_list = [0.3]
     for sparsity in sparsity_list:
         id = "{}_{}".format(method, sparsity)
         onnx_model_path = "saved_model/onnx_model/{}.onnx".format(id)
@@ -184,7 +184,7 @@ gc.collect()
 
 print("Testing ...")
 for method in ["simdoc_10", "sniplevel_30", "taylorfochannel_30"]:
-    sparsity_list = [0.3, 0.5, 0.8] if method != "taylorfochannel_30" else [0.3, 0.5]
+    sparsity_list = [0.3]
     for sparsity in sparsity_list:
         id = "{}_{}".format(method, sparsity)
         onnx_model_path = "saved_model/onnx_model/{}.onnx".format(id)

@@ -17,7 +17,7 @@ from data_provider import *
 from benchmarking_utils import AccuracyMetric
 
 # control the local testing or not
-local_demo = False
+local_demo = True
 # repeat time
 repeat = 10000
 # number of loops for one test
@@ -148,84 +148,75 @@ tvm_benchmark("taylorfochannel_30_0.5", "input.1")
 tvm_benchmark("quant_model_1", "onnx::Conv_0")
 
 '''
-Test on Macbook Raspberry Pi 4b
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+Test on Macbook M1
+2022-12-26 18:37:40.654 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp9zc5de1e/resnet56_rpc.tar
 TVM prediction top-1: 72, seal
 Target is: 72, seal
 *** resnet56 ***
-mean (ms)        median (ms)     std (ms)
-16.910491272     16.523597000000002      4.19621338496957
+mean (ms) 	 median (ms) 	 std (ms)
+14.082631418099998 	 13.015396	 11.839304837501961
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
-TVM prediction top-1: 55, otter
+2022-12-26 18:40:14.358 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpiszzn7i0/resnet56_rpc.tar
+TVM prediction top-1: 72, seal
 Target is: 72, seal
 *** simdoc_10_0.3 ***
-mean (ms)        median (ms)     std (ms)
-16.8499222317    16.454292000000002      4.2546969438207345
+mean (ms) 	 median (ms) 	 std (ms)
+14.2675391139 	 12.9646455	 12.226450871361818
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+2022-12-26 18:42:50.029 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpz9adqjd4/resnet56_rpc.tar
 TVM prediction top-1: 72, seal
 Target is: 72, seal
 *** simdoc_10_0.5 ***
-mean (ms)        median (ms)     std (ms)
-16.749172498799997       16.3910445      4.125120827961239
+mean (ms) 	 median (ms) 	 std (ms)
+12.8628694449 	 10.293958499999999	 14.059292691472391
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+2022-12-26 18:45:11.187 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmppjyx3y_y/resnet56_rpc.tar
 TVM prediction top-1: 93, turtle
 Target is: 72, seal
 *** simdoc_10_0.8 ***
-mean (ms)        median (ms)     std (ms)
-17.0440610278    16.6572565      4.420074868477964
+mean (ms) 	 median (ms) 	 std (ms)
+11.359193027200002 	 9.782312000000001	 10.363412836493882
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
-TVM prediction top-1: 44, lizard
+2022-12-26 18:47:17.531 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpjlk2q6w2/resnet56_rpc.tar
+TVM prediction top-1: 72, seal
 Target is: 72, seal
 *** sniplevel_30_0.3 ***
-mean (ms)        median (ms)     std (ms)
-16.937319465199998       16.559012499999998      4.229847561365775
+mean (ms) 	 median (ms) 	 std (ms)
+10.338644433099999 	 9.6429795	 7.457446302935148
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+2022-12-26 18:49:13.466 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpgf_z2kn6/resnet56_rpc.tar
 TVM prediction top-1: 55, otter
 Target is: 72, seal
 *** sniplevel_30_0.5 ***
-mean (ms)        median (ms)     std (ms)
-17.074978281899998       16.687881500000003      4.466113242429598
+mean (ms) 	 median (ms) 	 std (ms)
+10.491052674599999 	 9.687249999999999	 8.719743304577923
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
-TVM prediction top-1: 27, crocodile
+2022-12-26 18:51:10.903 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmpod7irrtk/resnet56_rpc.tar
+TVM prediction top-1: 93, turtle
 Target is: 72, seal
 *** sniplevel_30_0.8 ***
-mean (ms)        median (ms)     std (ms)
-17.1457452844    16.766666999999998      4.179864639001043
+mean (ms) 	 median (ms) 	 std (ms)
+10.619573171600003 	 9.701125000000001	 8.783563552663974
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
-TVM prediction top-1: 4, beaver
-Target is: 72, seal
-*** taylorfochannel_30_0.3 ***
-mean (ms)        median (ms)     std (ms)
-16.985623493700004       16.609406       4.0683502671606595
-
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+2022-12-26 18:53:09.837 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp0oibaz2p/resnet56_rpc.tar
 TVM prediction top-1: 55, otter
 Target is: 72, seal
-*** taylorfochannel_30_0.5 ***
-mean (ms)        median (ms)     std (ms)
-17.138288106899996       16.7489545      4.20717198063859
+*** taylorfochannel_30_0.3 ***
+mean (ms) 	 median (ms) 	 std (ms)
+10.469277588699999 	 9.642978999999999	 8.959543339215124
 
-dense is not optimized for arm cpu.
-dense is not optimized for arm cpu.
+2022-12-26 18:55:07.122 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp19fi5nn3/resnet56_rpc.tar
+TVM prediction top-1: 93, turtle
+Target is: 72, seal
+*** taylorfochannel_30_0.5 ***
+mean (ms) 	 median (ms) 	 std (ms)
+11.160059567600001 	 9.791770500000002	 10.366580582829103
+
+2022-12-26 18:57:11.484 INFO load_module /var/folders/8b/z2mgqcpj6flcwmnj5jj00j6r0000gn/T/tmp5rc3dcls/resnet56_rpc.tar
 TVM prediction top-1: 72, seal
 Target is: 72, seal
 *** quant_model_1 ***
-mean (ms)        median (ms)     std (ms)
-17.046436611700003       16.673063000000003      4.104875497812671
+mean (ms) 	 median (ms) 	 std (ms)
+10.7142628161 	 9.770812	 10.224622694416494
+
 '''
