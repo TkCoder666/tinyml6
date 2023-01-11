@@ -45,7 +45,7 @@ def get_vit_val_transforms(mean, std, img_size):
 
 mean = [0.5070, 0.4865, 0.4409]
 std = [0.2673, 0.2564, 0.2761]
-
+normal = [3.7411, 3.9002, 3.6219]
 valset = CIFAR100(root="./data", train=False,
                   transform=get_train_transforms(mean, std), download=True)
 trainset = CIFAR100(root="./data", train=True,
