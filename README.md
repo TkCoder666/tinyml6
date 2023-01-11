@@ -8,7 +8,12 @@
 
 ## 量化
 
+首先按照教程(https://www.yuque.com/mnn/cn/vg3to5)安装MNN的python和cpp版本，并且安装相应的库。
+接着直接用以下的命令进行训练量化：
 
+```bash
+python Quantizer/LSQQuantizer/LSQquan.py #启动LSQ量化
+```
 
 ## TVM
 
