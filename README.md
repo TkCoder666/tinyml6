@@ -4,7 +4,13 @@
 
 ## 剪枝
 
+参照教程(https://www.yuque.com/mnn/cn/fpy0dw)实现了MNN的三种剪枝方法，可运行下列命令进行剪枝。
 
+```bash
+python Pruner/SIMDOCPruner/mnn_prune.py 
+```
+
+测试了Pruning Filter in Filter的代码实现，具体代码可参考论文提供仓库(https://github.com/fxmeng/Pruning-Filter-in-Filter)
 
 ## 量化
 
